@@ -1,11 +1,9 @@
-package main
+package password
 
 import (
 	"flag"
 	"fmt"
 	"os"
-
-	"github.com/linzeyan/password/password"
 )
 
 const (
@@ -34,7 +32,7 @@ func main() {
 
 	check := *length - *minLower - *minUpper - *minSymbol - *minNumber
 	if check >= 0 {
-		pass := password.GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
+		pass := GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
 		fmt.Println(string(pass))
 	} else {
 		fmt.Println("Wrong values")
