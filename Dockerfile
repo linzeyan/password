@@ -7,8 +7,8 @@ ARG dist
 ARG projectDir
 WORKDIR ${projectDir}
 COPY . .
-RUN go build -o pass main.go
-RUN upx -9 -o ${dist} pass
+RUN go build -o main cmd/main.go
+RUN upx -9 -o ${dist} main
 
 FROM scratch
 ARG dist
