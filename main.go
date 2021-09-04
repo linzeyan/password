@@ -80,9 +80,9 @@ Options:
 var (
 	length    = flag.Int("length", 16, "Specify the password length")
 	minLower  = flag.Int("lower", 4, "Number of lowercase letters to include in the password")
-	minUpper  = flag.Int("upper", 2, "Number of uppsercase letters to include in the password")
+	minUpper  = flag.Int("upper", 2, "Number of uppercase letters to include in the password")
 	minSymbol = flag.Int("symbol", 2, "Number of symbols to include in the password")
-	minNumber = flag.Int("digits", 4, "Number of digits to include in the password")
+	minNumber = flag.Int("digit", 4, "Number of digits to include in the password")
 )
 
 func main() {
