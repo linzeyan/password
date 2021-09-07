@@ -3,7 +3,7 @@
 set -ex
 
 VERSION="$(git describe --tags)"
-PACKAGE="password"
+PACKAGE=$(basename ${PWD})
 TARGET="bin"
 
 build() {
