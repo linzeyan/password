@@ -2,7 +2,7 @@
 
 set -ex
 
-VERSION="$(git describe --tags --exact-match)"
+VERSION="$(git describe --tags)"
 PACKAGE="password"
 TARGET="bin"
 

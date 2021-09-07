@@ -35,7 +35,7 @@ func main() {
 	check := *length - *minLower - *minUpper - *minSymbol - *minNumber
 	if check >= 0 {
 		pass := password.GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
-		fmt.Println(string(pass))
+		fmt.Println(pass)
 	} else {
 		fmt.Println("Wrong values")
 		os.Exit(1)
