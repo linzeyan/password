@@ -14,8 +14,10 @@ const (
 	allSet       = lowerLetters + upperLetters + symbols + numbers
 )
 
+var now = time.Now().Local().UnixNano()
+
 func genString(length int, charSet string) string {
-	rand.Seed(time.Now().Local().UnixNano())
+	rand.Seed(now)
 	var s strings.Builder
 	for i := 0; i < length; i++ {
 		s.WriteByte(charSet[rand.Intn(len(charSet))])
