@@ -51,9 +51,9 @@ func GeneratePassword(length, minLower, minUpper, minSymbol, minNumber int) stri
 	symbol := GenSymbol(minSymbol)
 	num := GenNumber(minNumber)
 	remain := GenAll(length - minLower - minUpper - minSymbol - minNumber)
-	password := []byte(lower + upper + symbol + num + remain)
-	rand.Shuffle(len(password), func(i, j int) {
-		password[i], password[j] = password[j], password[i]
+	result := []byte(lower + upper + symbol + num + remain)
+	rand.Shuffle(len(result), func(i, j int) {
+		result[i], result[j] = result[j], result[i]
 	})
-	return string(password)
+	return string(result)
 }
