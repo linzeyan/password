@@ -60,7 +60,7 @@ func encrypt() {
 	fmt.Print("Enter password: ")
 	text, _ := reader.ReadString('\n')
 	fmt.Println("Encrypt password...")
-	salt := password.RandomBytes()
+	salt := password.RandomBytes([]byte(password.GenAll(15)))
 	result := password.HashPassword(salt + text)
 	fmt.Printf(`{"salt":"%s","password":"%s"}`, salt, result)
 }
@@ -79,7 +79,5 @@ func compareHash() {
 	result := password.CheckHash(hash, salt, passWord)
 	if result {
 		fmt.Println("Match")
-	} else {
-		fmt.Println("Miss")
 	}
 }
