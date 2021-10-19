@@ -20,11 +20,11 @@ Options:
 
 var (
 	operator  = flag.String("o", "pass", "Specify function(pass, encrypt)")
-	length    = flag.Int("length", 16, "Specify the password length")
-	minLower  = flag.Int("lower", 4, "Number of lowercase letters to include in the password")
-	minUpper  = flag.Int("upper", 2, "Number of uppercase letters to include in the password")
-	minSymbol = flag.Int("symbol", 2, "Number of symbols to include in the password")
-	minNumber = flag.Int("digit", 4, "Number of digits to include in the password")
+	length    = flag.Uint("length", 16, "Specify the password length")
+	minLower  = flag.Uint("lower", 4, "Number of lowercase letters to include in the password")
+	minUpper  = flag.Uint("upper", 2, "Number of uppercase letters to include in the password")
+	minSymbol = flag.Uint("symbol", 2, "Number of symbols to include in the password")
+	minNumber = flag.Uint("digit", 4, "Number of digits to include in the password")
 )
 
 func main() {
@@ -41,18 +41,11 @@ func main() {
 	case "check":
 		compareHash()
 	}
-
 }
 
 func pass() {
-	check := *length - *minLower - *minUpper - *minSymbol - *minNumber
-	if check >= 0 {
-		pass := password.GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
-		fmt.Println(pass)
-	} else {
-		fmt.Println("Wrong values")
-		os.Exit(1)
-	}
+	pass := password.GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
+	fmt.Println(pass)
 }
 
 func encrypt() {
@@ -60,8 +53,8 @@ func encrypt() {
 	fmt.Print("Enter password: ")
 	text, _ := reader.ReadString('\n')
 	fmt.Println("Encrypt password...")
-	salt := password.RandomBytes([]byte(password.GenAll(15)))
-	result := password.HashPassword(salt + text)
+	salt := password.RandomBytes([]byte(password.GenAll(uint(len(text))+15) + text))
+	result := password.HashPassword([]byte(salt + text))
 	fmt.Printf(`{"salt":"%s","password":"%s"}`, salt, result)
 }
 
@@ -76,7 +69,7 @@ func compareHash() {
 	input = bufio.NewReader(os.Stdin)
 	fmt.Print("Enter password: ")
 	passWord, _ := input.ReadString('\n')
-	result := password.CheckHash(hash, salt, passWord)
+	result := password.CheckHash([]byte(hash), []byte(salt+passWord))
 	if result {
 		fmt.Println("Match")
 	}

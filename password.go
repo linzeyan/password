@@ -16,41 +16,45 @@ const (
 
 var now = time.Now().Local().UnixNano()
 
-func genString(length int, charSet string) string {
+func genString(length uint, charSet string) string {
 	rand.Seed(now)
 	var s strings.Builder
-	for i := 0; i < length; i++ {
+	for i := uint(0); i < length; i++ {
 		s.WriteByte(charSet[rand.Intn(len(charSet))])
 	}
 	return s.String()
 }
 
-func GenLower(length int) string {
+func GenLower(length uint) string {
 	return genString(length, lowerLetters)
 }
 
-func GenUpper(length int) string {
+func GenUpper(length uint) string {
 	return genString(length, upperLetters)
 }
 
-func GenSymbol(length int) string {
+func GenSymbol(length uint) string {
 	return genString(length, symbols)
 }
 
-func GenNumber(length int) string {
+func GenNumber(length uint) string {
 	return genString(length, numbers)
 }
 
-func GenAll(length int) string {
+func GenAll(length uint) string {
 	return genString(length, allSet)
 }
 
-func GeneratePassword(length, minLower, minUpper, minSymbol, minNumber int) string {
+func GeneratePassword(length, minLower, minUpper, minSymbol, minNumber uint) string {
+	var remain string
+	leave := length - minLower - minUpper - minSymbol - minNumber
 	lower := GenLower(minLower)
 	upper := GenUpper(minUpper)
 	symbol := GenSymbol(minSymbol)
 	num := GenNumber(minNumber)
-	remain := GenAll(length - minLower - minUpper - minSymbol - minNumber)
+	if leave != 0 {
+		remain = GenAll(leave)
+	}
 	result := []byte(lower + upper + symbol + num + remain)
 	rand.Shuffle(len(result), func(i, j int) {
 		result[i], result[j] = result[j], result[i]

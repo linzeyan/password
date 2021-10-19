@@ -11,7 +11,7 @@ import (
 
 func RandomBytes(seed []byte) string {
 	/* Generate random salt */
-	var salt []byte
+	var salt = make([]byte, 2)
 	if seed == nil {
 		rand.Seed(now)
 		_, err := rand.Read(seed[:])
@@ -29,18 +29,18 @@ func RandomBytes(seed []byte) string {
 	return s
 }
 
-func HashPassword(password string) string {
+func HashPassword(password []byte) []byte {
 	const cost int = 15
-	passHash, err := bcrypt.GenerateFromPassword([]byte(password), cost)
+	passHash, err := bcrypt.GenerateFromPassword(password, cost)
 	if err != nil {
 		fmt.Println(err)
-		return err.Error()
+		return nil
 	}
-	return string(passHash)
+	return passHash
 }
 
-func CheckHash(hash, salt, password string) bool {
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(salt+password)); err != nil {
+func CheckHash(hash, password []byte) bool {
+	if err := bcrypt.CompareHashAndPassword(hash, password); err != nil {
 		fmt.Println(err)
 		return false
 	}
