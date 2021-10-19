@@ -33,7 +33,7 @@ func RandomBytes(seed []byte, t int64) string {
 	return s
 }
 
-func HashPassword(password []byte) []byte {
+func HashPassword(password []byte, cost int) []byte {
 	passHash, err := bcrypt.GenerateFromPassword(password, cost)
 	if err != nil {
 		fmt.Println(err)
@@ -63,7 +63,7 @@ func (e *Encrypt) Hashed(p string) {
 	e.time = now
 	e.seed = GenAll(uint(len(p) + e.cost))
 	e.salt = RandomBytes([]byte(p+e.seed), e.time)
-	e.hash = string(HashPassword([]byte(e.salt + p)))
+	e.hash = string(HashPassword([]byte(e.salt+p), e.cost))
 	fmt.Printf(`{"salt":"%s","password":"%s"}`, e.salt, e.hash)
 }
 
@@ -80,6 +80,6 @@ type Decrypt struct {
 
 func (d *Decrypt) Compare(p string) bool {
 	salt := RandomBytes([]byte(p+d.seed), d.time)
-	pw := HashPassword([]byte(salt + p))
+	pw := HashPassword([]byte(salt+p), cost)
 	return CheckHash([]byte(d.hash), pw)
 }

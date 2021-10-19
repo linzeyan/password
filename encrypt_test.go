@@ -16,6 +16,6 @@ func BenchmarkEncryptRandomBytesWithNil(b *testing.B) {
 
 func BenchmarkEncryptHashPassword(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		HashPassword([]byte(RandomBytes([]byte(GenAll(64)), now)))
+		HashPassword([]byte(RandomBytes([]byte(GenAll(64)), now)), cost)
 	}
 }
