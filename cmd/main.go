@@ -40,11 +40,13 @@ func main() {
 		encrypt()
 	case "check":
 		compareHash()
+	case "otp":
+		otp()
 	}
 }
 
 func pass() {
-	pass := password.GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
+	pass := password.Password.GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
 	fmt.Println(pass)
 }
 
@@ -53,7 +55,7 @@ func encrypt() {
 	fmt.Print("Enter password: ")
 	text, _ := reader.ReadString('\n')
 	fmt.Println("Encrypt password...")
-	password.Enc(text)
+	password.Encrypt.Hashed(text)
 }
 
 func compareHash() {
@@ -67,8 +69,14 @@ func compareHash() {
 	input = bufio.NewReader(os.Stdin)
 	fmt.Print("Enter password: ")
 	passWord, _ := input.ReadString('\n')
-	result := password.CheckHash([]byte(hash), []byte(salt+passWord))
+	result := password.Hash.CheckHash([]byte(hash), []byte(salt+passWord))
 	if result {
 		fmt.Println("Match")
 	}
+}
+
+func otp() {
+	secret := "ihI24nok/BpGqCu3W3FA6HqYEZo="
+	otp := password.OTP.TOTP(secret)
+	fmt.Println(otp)
 }
