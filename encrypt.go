@@ -54,7 +54,9 @@ func (hash) CheckHash(hash, password []byte) bool {
 	return true
 }
 
-type Encrypt struct {
+var Encrypt encrypt
+
+type encrypt struct {
 	seed string
 	salt string
 	hash string
@@ -62,18 +64,14 @@ type Encrypt struct {
 	cost int
 }
 
-func (e *Encrypt) Hashed(p string) {
+func (e *encrypt) Hashed(p string) (string, string) {
 	e.cost = cost
 	e.time = now
 	e.seed = Password.GenAll(uint(len(p) + e.cost))
 	e.salt = Hash.RandomBytes([]byte(p+e.seed), e.time)
 	e.hash = string(Hash.HashPassword([]byte(e.salt+p), e.cost))
 	fmt.Printf(`{"salt":"%s","password":"%s"}`, e.salt, e.hash)
-}
-
-func Enc(p string) {
-	e := new(Encrypt)
-	e.Hashed(p)
+	return e.salt, e.hash
 }
 
 type Decrypt struct {
