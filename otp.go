@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/hmac"
 	"crypto/sha512"
-	"encoding/base64"
+	"encoding/base32"
 	"encoding/binary"
 	"fmt"
 	"strconv"
@@ -18,18 +18,31 @@ var (
 
 	Digits = Digits6
 
+	timestamp = time.Now().Unix() / 30
+
 	OTP otp
 )
 
 type otp struct{}
 
-func (otp) HOTP(secret string, interval int64) string {
-	key, err := base64.StdEncoding.DecodeString(strings.ToUpper(secret))
+func (otp) GenSecret() (string, error) {
+	buf := bytes.Buffer{}
+	err := binary.Write(&buf, binary.BigEndian, timestamp)
+	if err != nil {
+		return "", err
+	}
+	hasher := hmac.New(sha512.New, buf.Bytes())
+	secret := base32.StdEncoding.EncodeToString(hasher.Sum(nil))
+	return secret, nil
+}
+
+func (otp) HOTP(secret string) string {
+	key, err := base32.StdEncoding.DecodeString(strings.ToUpper(secret))
 	if err != nil {
 		fmt.Println(err)
 	}
 	buf := make([]byte, 8)
-	binary.BigEndian.PutUint64(buf, uint64(interval))
+	binary.BigEndian.PutUint64(buf, uint64(timestamp))
 	hasher := hmac.New(sha512.New, key)
 	hasher.Write(buf)
 	h := hasher.Sum(nil)
@@ -55,11 +68,19 @@ func (otp) HOTP(secret string, interval int64) string {
 }
 
 func (o *otp) TOTP(secret string) string {
-	interval := time.Now().Unix() / 30
-	return o.HOTP(secret, interval)
+	return o.HOTP(secret)
 }
 
 func (o *otp) Verify(secret string, input uint) bool {
 	otp := o.TOTP(secret)
 	return otp == strconv.Itoa(int(input))
+}
+
+func NewOTP(account, issuer string) (string, error) {
+	const uri string = "otpauth://totp/%s:%s?secret=%s&issuer=%s"
+	secret, err := OTP.GenSecret()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf(uri, issuer, account, secret, issuer), nil
 }

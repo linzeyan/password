@@ -13,11 +13,11 @@ const (
 	cost int = 15
 )
 
-var Hash hash
+var Hash hashs
 
-type hash struct{}
+type hashs struct{}
 
-func (hash) RandomBytes(seed []byte, t int64) string {
+func (hashs) RandomBytes(seed []byte, t int64) string {
 	/* Generate random salt */
 	var salt = make([]byte, 2)
 	if seed == nil {
@@ -37,7 +37,7 @@ func (hash) RandomBytes(seed []byte, t int64) string {
 	return s
 }
 
-func (hash) HashPassword(password []byte, cost int) []byte {
+func (hashs) HashPassword(password []byte, cost int) []byte {
 	passHash, err := bcrypt.GenerateFromPassword(password, cost)
 	if err != nil {
 		fmt.Println(err)
@@ -46,7 +46,7 @@ func (hash) HashPassword(password []byte, cost int) []byte {
 	return passHash
 }
 
-func (hash) CheckHash(hash, password []byte) bool {
+func (hashs) CheckHash(hash, password []byte) bool {
 	if err := bcrypt.CompareHashAndPassword(hash, password); err != nil {
 		fmt.Println(err)
 		return false
