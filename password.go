@@ -16,7 +16,11 @@ const (
 
 var now = time.Now().Local().UnixNano()
 
-func genString(length uint, charSet string) string {
+var Password password
+
+type password struct{}
+
+func (password) genString(length uint, charSet string) string {
 	rand.Seed(now)
 	var s strings.Builder
 	for i := uint(0); i < length; i++ {
@@ -25,35 +29,35 @@ func genString(length uint, charSet string) string {
 	return s.String()
 }
 
-func GenLower(length uint) string {
-	return genString(length, lowerLetters)
+func (p *password) GenLower(length uint) string {
+	return p.genString(length, lowerLetters)
 }
 
-func GenUpper(length uint) string {
-	return genString(length, upperLetters)
+func (p *password) GenUpper(length uint) string {
+	return p.genString(length, upperLetters)
 }
 
-func GenSymbol(length uint) string {
-	return genString(length, symbols)
+func (p *password) GenSymbol(length uint) string {
+	return p.genString(length, symbols)
 }
 
-func GenNumber(length uint) string {
-	return genString(length, numbers)
+func (p *password) GenNumber(length uint) string {
+	return p.genString(length, numbers)
 }
 
-func GenAll(length uint) string {
-	return genString(length, allSet)
+func (p *password) GenAll(length uint) string {
+	return p.genString(length, allSet)
 }
 
-func GeneratePassword(length, minLower, minUpper, minSymbol, minNumber uint) string {
+func (p *password) GeneratePassword(length, minLower, minUpper, minSymbol, minNumber uint) string {
 	var remain string
 	leave := length - minLower - minUpper - minSymbol - minNumber
-	lower := GenLower(minLower)
-	upper := GenUpper(minUpper)
-	symbol := GenSymbol(minSymbol)
-	num := GenNumber(minNumber)
+	lower := p.GenLower(minLower)
+	upper := p.GenUpper(minUpper)
+	symbol := p.GenSymbol(minSymbol)
+	num := p.GenNumber(minNumber)
 	if leave != 0 {
-		remain = GenAll(leave)
+		remain = p.GenAll(leave)
 	}
 	result := []byte(lower + upper + symbol + num + remain)
 	rand.Shuffle(len(result), func(i, j int) {

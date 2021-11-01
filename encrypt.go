@@ -13,7 +13,11 @@ const (
 	cost int = 15
 )
 
-func RandomBytes(seed []byte, t int64) string {
+var Hash hash
+
+type hash struct{}
+
+func (hash) RandomBytes(seed []byte, t int64) string {
 	/* Generate random salt */
 	var salt = make([]byte, 2)
 	if seed == nil {
@@ -33,7 +37,7 @@ func RandomBytes(seed []byte, t int64) string {
 	return s
 }
 
-func HashPassword(password []byte, cost int) []byte {
+func (hash) HashPassword(password []byte, cost int) []byte {
 	passHash, err := bcrypt.GenerateFromPassword(password, cost)
 	if err != nil {
 		fmt.Println(err)
@@ -42,7 +46,7 @@ func HashPassword(password []byte, cost int) []byte {
 	return passHash
 }
 
-func CheckHash(hash, password []byte) bool {
+func (hash) CheckHash(hash, password []byte) bool {
 	if err := bcrypt.CompareHashAndPassword(hash, password); err != nil {
 		fmt.Println(err)
 		return false
@@ -61,9 +65,9 @@ type Encrypt struct {
 func (e *Encrypt) Hashed(p string) {
 	e.cost = cost
 	e.time = now
-	e.seed = GenAll(uint(len(p) + e.cost))
-	e.salt = RandomBytes([]byte(p+e.seed), e.time)
-	e.hash = string(HashPassword([]byte(e.salt+p), e.cost))
+	e.seed = Password.GenAll(uint(len(p) + e.cost))
+	e.salt = Hash.RandomBytes([]byte(p+e.seed), e.time)
+	e.hash = string(Hash.HashPassword([]byte(e.salt+p), e.cost))
 	fmt.Printf(`{"salt":"%s","password":"%s"}`, e.salt, e.hash)
 }
 
@@ -79,7 +83,7 @@ type Decrypt struct {
 }
 
 func (d *Decrypt) Compare(p string) bool {
-	salt := RandomBytes([]byte(p+d.seed), d.time)
-	pw := HashPassword([]byte(salt+p), cost)
-	return CheckHash([]byte(d.hash), pw)
+	salt := Hash.RandomBytes([]byte(p+d.seed), d.time)
+	pw := Hash.HashPassword([]byte(salt+p), cost)
+	return Hash.CheckHash([]byte(d.hash), pw)
 }
