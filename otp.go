@@ -3,6 +3,7 @@ package password
 import (
 	"bytes"
 	"crypto/hmac"
+	"crypto/sha1"
 	"crypto/sha512"
 	"encoding/base32"
 	"encoding/binary"
@@ -41,7 +42,7 @@ func (otp) HOTP(secret string, timeInterval int64) string {
 	}
 	buf := make([]byte, 8)
 	binary.BigEndian.PutUint64(buf, uint64(timeInterval))
-	hasher := hmac.New(sha512.New, key)
+	hasher := hmac.New(sha1.New, key)
 	hasher.Write(buf)
 	h := hasher.Sum(nil)
 	offset := h[len(h)-1] & 0xf
