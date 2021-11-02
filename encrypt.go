@@ -66,7 +66,7 @@ type encrypt struct {
 
 func (e *encrypt) Hashed(p string) (string, string) {
 	e.cost = cost
-	e.time = now
+	e.time = timestampNano
 	e.seed = Password.GenAll(uint(len(p) + e.cost))
 	e.salt = Hash.RandomBytes([]byte(p+e.seed), e.time)
 	e.hash = string(Hash.HashPassword([]byte(e.salt+p), e.cost))

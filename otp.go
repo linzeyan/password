@@ -71,9 +71,8 @@ func (o *otp) TOTP(secret string) string {
 	return o.HOTP(secret)
 }
 
-func (o *otp) Verify(secret string, input uint) bool {
-	otp := o.TOTP(secret)
-	return otp == strconv.Itoa(int(input))
+func (o *otp) Verify(secret, input string) bool {
+	return o.TOTP(secret) == input
 }
 
 func NewOTP(account, issuer string) (string, error) {
