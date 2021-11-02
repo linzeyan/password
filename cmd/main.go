@@ -76,7 +76,7 @@ func compareHash() {
 }
 
 func otp() {
-	secret := "ihI24nok/BpGqCu3W3FA6HqYEZo="
+	secret := "losxacbtukionffzixcmkdys"
 	otp := password.OTP.TOTP(secret)
 	fmt.Println(otp)
 }

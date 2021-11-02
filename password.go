@@ -14,14 +14,12 @@ const (
 	allSet       = lowerLetters + upperLetters + symbols + numbers
 )
 
-var timestampNano = time.Now().Local().UnixNano()
-
 var Password password
 
 type password struct{}
 
 func (password) genString(length uint, charSet string) string {
-	rand.Seed(timestampNano)
+	rand.Seed(time.Now().Local().UnixNano())
 	var s strings.Builder
 	for i := uint(0); i < length; i++ {
 		s.WriteByte(charSet[rand.Intn(len(charSet))])

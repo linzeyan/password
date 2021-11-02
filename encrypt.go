@@ -5,13 +5,12 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math/rand"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-const (
-	cost int = 15
-)
+var Cost int = 15
 
 var Hash hashs
 
@@ -65,8 +64,8 @@ type encrypt struct {
 }
 
 func (e *encrypt) Hashed(p string) (string, string) {
-	e.cost = cost
-	e.time = timestampNano
+	e.cost = Cost
+	e.time = time.Now().Local().UnixNano()
 	e.seed = Password.GenAll(uint(len(p) + e.cost))
 	e.salt = Hash.RandomBytes([]byte(p+e.seed), e.time)
 	e.hash = string(Hash.HashPassword([]byte(e.salt+p), e.cost))
@@ -82,6 +81,6 @@ type Decrypt struct {
 
 func (d *Decrypt) Compare(p string) bool {
 	salt := Hash.RandomBytes([]byte(p+d.seed), d.time)
-	pw := Hash.HashPassword([]byte(salt+p), cost)
+	pw := Hash.HashPassword([]byte(salt+p), Cost)
 	return Hash.CheckHash([]byte(d.hash), pw)
 }

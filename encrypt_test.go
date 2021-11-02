@@ -1,21 +1,24 @@
 package password
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func BenchmarkEncryptRandomBytes(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		Hash.RandomBytes([]byte(Password.GenAll(64)), timestampNano)
+		Hash.RandomBytes([]byte(Password.GenAll(64)), time.Now().Local().UnixNano())
 	}
 }
 
 func BenchmarkEncryptRandomBytesWithNil(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		Hash.RandomBytes(nil, timestampNano)
+		Hash.RandomBytes(nil, time.Now().Local().UnixNano())
 	}
 }
 
 func BenchmarkEncryptHashPassword(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		Hash.HashPassword([]byte(Hash.RandomBytes([]byte(Password.GenAll(64)), timestampNano)), cost)
+		Hash.HashPassword([]byte(Hash.RandomBytes([]byte(Password.GenAll(64)), time.Now().Local().UnixNano())), Cost)
 	}
 }

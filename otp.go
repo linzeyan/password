@@ -18,16 +18,14 @@ var (
 
 	Digits = Digits6
 
-	timestamp = time.Now().Unix() / 30
-
 	OTP otp
 )
 
 type otp struct{}
 
-func (otp) GenSecret() (string, error) {
+func (otp) GenSecret(timeInterval int64) (string, error) {
 	buf := bytes.Buffer{}
-	err := binary.Write(&buf, binary.BigEndian, timestamp)
+	err := binary.Write(&buf, binary.BigEndian, timeInterval)
 	if err != nil {
 		return "", err
 	}
@@ -36,13 +34,13 @@ func (otp) GenSecret() (string, error) {
 	return secret, nil
 }
 
-func (otp) HOTP(secret string) string {
+func (otp) HOTP(secret string, timeInterval int64) string {
 	key, err := base32.StdEncoding.DecodeString(strings.ToUpper(secret))
 	if err != nil {
 		fmt.Println(err)
 	}
 	buf := make([]byte, 8)
-	binary.BigEndian.PutUint64(buf, uint64(timestamp))
+	binary.BigEndian.PutUint64(buf, uint64(timeInterval))
 	hasher := hmac.New(sha512.New, key)
 	hasher.Write(buf)
 	h := hasher.Sum(nil)
@@ -68,16 +66,18 @@ func (otp) HOTP(secret string) string {
 }
 
 func (o *otp) TOTP(secret string) string {
-	return o.HOTP(secret)
+	t := time.Now().Local().Unix() / 30
+	return o.HOTP(secret, t)
 }
 
-func (o *otp) Verify(secret, input string) bool {
+func (o *otp) Verify(secret string, input string) bool {
 	return o.TOTP(secret) == input
 }
 
 func NewOTP(account, issuer string) (string, error) {
 	const uri string = "otpauth://totp/%s:%s?secret=%s&issuer=%s"
-	secret, err := OTP.GenSecret()
+	t := time.Now().Local().Unix() / 30
+	secret, err := OTP.GenSecret(t)
 	if err != nil {
 		return "", err
 	}
