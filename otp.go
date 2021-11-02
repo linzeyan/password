@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/hmac"
 	"crypto/sha1"
-	"crypto/sha512"
 	"encoding/base32"
 	"encoding/binary"
 	"fmt"
@@ -30,7 +29,7 @@ func (otp) GenSecret(timeInterval int64) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	hasher := hmac.New(sha512.New, buf.Bytes())
+	hasher := hmac.New(sha1.New, buf.Bytes())
 	secret := base32.StdEncoding.EncodeToString(hasher.Sum(nil))
 	return secret, nil
 }
