@@ -7,9 +7,12 @@ import (
 	"encoding/base32"
 	"encoding/binary"
 	"fmt"
+	"image/color"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/skip2/go-qrcode"
 )
 
 var (
@@ -82,4 +85,12 @@ func NewOTP(account, issuer string) (string, error) {
 		return "", err
 	}
 	return fmt.Sprintf(uri, issuer, account, secret, issuer), nil
+}
+
+func GenQRCode(content string, size int) {
+	dest := "/tmp/qrcode.tmp.png"
+	err := qrcode.WriteColorFile(content, qrcode.Medium, size, color.White, color.Black, dest)
+	if err != nil {
+		fmt.Print(err)
+	}
 }
