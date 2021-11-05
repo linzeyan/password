@@ -7,6 +7,7 @@ import (
 	"encoding/base32"
 	"encoding/binary"
 	"fmt"
+	"image"
 	"image/color"
 	"os"
 	"strconv"
@@ -14,7 +15,9 @@ import (
 	"time"
 
 	"github.com/skip2/go-qrcode"
-	qrread "github.com/tuotoo/qrcode"
+
+	"github.com/makiuchi-d/gozxing"
+	qrread "github.com/makiuchi-d/gozxing/qrcode"
 )
 
 var (
@@ -104,11 +107,22 @@ func ReadQRCode(filename string) string {
 		return err.Error()
 	}
 	defer f.Close()
-	s, err := qrread.Decode(f)
+	img, _, err := image.Decode(f)
 	if err != nil {
 		fmt.Println(err)
 		return err.Error()
 	}
-	fmt.Println(s.Content)
-	return s.Content
+	png, err := gozxing.NewBinaryBitmapFromImage(img)
+	if err != nil {
+		fmt.Println(err)
+		return err.Error()
+	}
+	qrReader := qrread.NewQRCodeReader()
+	result, err := qrReader.Decode(png, nil)
+	if err != nil {
+		fmt.Println(err)
+		return err.Error()
+	}
+	fmt.Println(result.String())
+	return result.String()
 }
