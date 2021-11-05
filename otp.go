@@ -8,11 +8,13 @@ import (
 	"encoding/binary"
 	"fmt"
 	"image/color"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/skip2/go-qrcode"
+	qrread "github.com/tuotoo/qrcode"
 )
 
 var (
@@ -93,4 +95,20 @@ func GenQRCode(content string, size int) {
 	if err != nil {
 		fmt.Print(err)
 	}
+}
+
+func ReadQRCode(filename string) string {
+	f, err := os.Open(filename)
+	if err != nil {
+		fmt.Println(err)
+		return err.Error()
+	}
+	defer f.Close()
+	s, err := qrread.Decode(f)
+	if err != nil {
+		fmt.Println(err)
+		return err.Error()
+	}
+	fmt.Println(s.Content)
+	return s.Content
 }
