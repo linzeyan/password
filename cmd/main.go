@@ -76,7 +76,9 @@ func compareHash() {
 }
 
 func otp() {
-	secret := "losxacbtukionffzixcmkdys"
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("Enter secret: ")
+	secret, _ := reader.ReadString('\n')
 	otp := password.OTP.TOTP(secret)
-	fmt.Println(otp)
+	fmt.Println("Passcode:", otp)
 }
