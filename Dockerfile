@@ -10,6 +10,6 @@ COPY . .
 RUN go build -trimpath -o main cmd/main.go
 RUN upx -9 -o ${dist} main
 
-FROM scratch
-ARG dist
-COPY --from=builder ${dist} /usr/local/bin/password
+FROM gcr.io/distroless/static:nonroot
+COPY --from=builder --chown=nonroot:nonroot /tmp/password /bin/password
+ENTRYPOINT ["/bin/password"]
