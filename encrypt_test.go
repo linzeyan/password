@@ -7,7 +7,7 @@ import (
 
 func BenchmarkEncryptRandomBytes(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		Hash.RandomBytes([]byte(Password.GenAll(64)), time.Now().Local().UnixNano())
+		Hash.RandomBytes([]byte(GenAll(64)), time.Now().Local().UnixNano())
 	}
 }
 
@@ -19,6 +19,6 @@ func BenchmarkEncryptRandomBytesWithNil(b *testing.B) {
 
 func BenchmarkEncryptHashPassword(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		Hash.HashPassword([]byte(Hash.RandomBytes([]byte(Password.GenAll(64)), time.Now().Local().UnixNano())), Cost)
+		Hash.HashPassword([]byte(Hash.RandomBytes([]byte(GenAll(64)), time.Now().Local().UnixNano())), Cost)
 	}
 }

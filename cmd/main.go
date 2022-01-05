@@ -46,7 +46,7 @@ func main() {
 }
 
 func pass() {
-	pass := password.Password.GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
+	pass := password.GeneratePassword(*length, *minLower, *minUpper, *minSymbol, *minNumber)
 	fmt.Println(pass)
 }
 

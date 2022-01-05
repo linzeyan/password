@@ -14,7 +14,7 @@ const (
 	allSet       = lowerLetters + upperLetters + symbols + numbers
 )
 
-var Password password
+var p password
 
 type password struct{}
 
@@ -27,35 +27,35 @@ func (password) genString(length uint, charSet string) string {
 	return s.String()
 }
 
-func (p *password) GenLower(length uint) string {
+func GenLower(length uint) string {
 	return p.genString(length, lowerLetters)
 }
 
-func (p *password) GenUpper(length uint) string {
+func GenUpper(length uint) string {
 	return p.genString(length, upperLetters)
 }
 
-func (p *password) GenSymbol(length uint) string {
+func GenSymbol(length uint) string {
 	return p.genString(length, symbols)
 }
 
-func (p *password) GenNumber(length uint) string {
+func GenNumber(length uint) string {
 	return p.genString(length, numbers)
 }
 
-func (p *password) GenAll(length uint) string {
+func GenAll(length uint) string {
 	return p.genString(length, allSet)
 }
 
-func (p *password) GeneratePassword(length, minLower, minUpper, minSymbol, minNumber uint) string {
+func GeneratePassword(length, minLower, minUpper, minSymbol, minNumber uint) string {
 	var remain string
 	leave := length - minLower - minUpper - minSymbol - minNumber
-	lower := p.GenLower(minLower)
-	upper := p.GenUpper(minUpper)
-	symbol := p.GenSymbol(minSymbol)
-	num := p.GenNumber(minNumber)
+	lower := GenLower(minLower)
+	upper := GenUpper(minUpper)
+	symbol := GenSymbol(minSymbol)
+	num := GenNumber(minNumber)
 	if leave != 0 {
-		remain = p.GenAll(leave)
+		remain = GenAll(leave)
 	}
 	result := []byte(lower + upper + symbol + num + remain)
 	rand.Shuffle(len(result), func(i, j int) {
