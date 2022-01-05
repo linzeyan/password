@@ -15,11 +15,19 @@ jobs:
     steps:
       - name: "Build:checkout"
         uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PAT }}
       - name: "Build:dockerimage"
         uses: docker/build-push-action@v2
         with:
-          registry: ghcr.io
-          username: "linzeyan"
-          password: ${{ secrets.PAT }}
-          repository: ${{ github.repository }}
-          tags: ${{ github.ref_name }}, latest
+          context: .
+          pull: true
+          push: true
+          platforms: linux/amd64, linux/arm64
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+            ghcr.io/${{ github.repository }}:latest
