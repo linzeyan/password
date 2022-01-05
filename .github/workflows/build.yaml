@@ -2,9 +2,11 @@
 name: "build"
 
 on:
+  release:
+    types: [published, created, edited]
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
 
 jobs:
   build:
@@ -14,10 +16,10 @@ jobs:
       - name: "Build:checkout"
         uses: actions/checkout@v2
       - name: "Build:dockerimage"
-        uses: docker/build-push-action@v1
+        uses: docker/build-push-action@v2
         with:
           registry: ghcr.io
           username: "linzeyan"
           password: ${{ secrets.PAT }}
-          repository: linzeyan/password
-          tags: latest
+          repository: ${{ github.repository }}
+          tags: ${{ github.ref_name }}, latest
