@@ -6,19 +6,21 @@ import (
 	"time"
 )
 
+type Character string
+
 const (
-	lowerLetters = "abcdefghijklmnopqrstuvwxyz"
-	upperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	symbols      = "~!@#$%^&*()_+`-={}|[]\\:\"<>?,./"
-	numbers      = "0123456789"
-	allSet       = lowerLetters + upperLetters + symbols + numbers
+	lowerLetters Character = "abcdefghijklmnopqrstuvwxyz"
+	upperLetters Character = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	symbols      Character = "~!@#$%^&*()_+`-={}|[]:<>?,./"
+	numbers      Character = "0123456789"
+	allSet       Character = lowerLetters + upperLetters + symbols + numbers
 )
 
 var p password
 
 type password struct{}
 
-func (password) genString(length uint, charSet string) string {
+func (password) genString(length uint, charSet Character) string {
 	rand.Seed(time.Now().Local().UnixNano())
 	var s strings.Builder
 	for i := uint(0); i < length; i++ {
