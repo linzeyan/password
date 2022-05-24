@@ -1,7 +1,9 @@
 package password
 
 import (
+	"log"
 	"math/rand"
+	"os"
 	"strings"
 	"time"
 )
@@ -16,11 +18,9 @@ const (
 	allSet       Character = lowerLetters + upperLetters + symbols + numbers
 )
 
-var p password
-
 type password struct{}
 
-func (password) genString(length uint, charSet Character) string {
+func (*password) genString(length uint, charSet Character) string {
 	rand.Seed(time.Now().Local().UnixNano())
 	var s strings.Builder
 	for i := uint(0); i < length; i++ {
@@ -30,28 +30,40 @@ func (password) genString(length uint, charSet Character) string {
 }
 
 func GenLower(length uint) string {
+	var p password
 	return p.genString(length, lowerLetters)
 }
 
 func GenUpper(length uint) string {
+	var p password
 	return p.genString(length, upperLetters)
 }
 
 func GenSymbol(length uint) string {
+	var p password
 	return p.genString(length, symbols)
 }
 
 func GenNumber(length uint) string {
+	var p password
 	return p.genString(length, numbers)
 }
 
 func GenAll(length uint) string {
+	var p password
 	return p.genString(length, allSet)
 }
 
 func GeneratePassword(length, minLower, minUpper, minSymbol, minNumber uint) string {
 	var remain string
-	leave := length - minLower - minUpper - minSymbol - minNumber
+	var leave uint
+	sum := minLower + minUpper + minSymbol + minNumber
+	if length >= sum {
+		leave = length - sum
+	} else {
+		log.Println("Wrong number")
+		os.Exit(1)
+	}
 	lower := GenLower(minLower)
 	upper := GenUpper(minUpper)
 	symbol := GenSymbol(minSymbol)
